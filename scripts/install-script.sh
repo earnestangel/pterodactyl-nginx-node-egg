@@ -2,20 +2,20 @@
 
 # [SETUP] Install necessary packages, including git
 echo -e "[SETUP] Install packages"
-apt-get update -qq > /dev/null 2>&1 && apt-get install -qq > /dev/null 2>&1 -y git wget perl perl-doc
+apt-get update -qq > /dev/null 2>&1 && apt-get install -qq > /dev/null 2>&1 -y git wget
 
 # Change to server directory
 cd /mnt/server
 
 # [SETUP] Create necessary folders
 echo -e "[SETUP] Create folders"
-mkdir -p logs tmp www
+mkdir -p logs tmp www node
 
 # Clone the default repository into a temporary directory
 echo "[Git] Cloning default repository 'https://github.com/earnestangel/pterodactyl-nginx-node-egg' into temporary directory."
 git clone https://github.com/earnestangel/pterodactyl-nginx-node-egg /mnt/server/gtemp > /dev/null 2>&1 && echo "[Git] Repository cloned successfully." || { echo "[Git] Error: Default repository clone failed."; exit 21; }
 
-# Copy the www folder and files from the temporary repository to the target directory
+# Copy only nginx related folders and files from the temporary repository
 echo "[Git] Copying folder and files from default repository."
 cp -r /mnt/server/gtemp/nginx /mnt/server || { echo "[Git] Error: Copying 'nginx' folder failed."; exit 22; }
 cp -r /mnt/server/gtemp/modules /mnt/server || { echo "[Git] Error: Copying 'modules' folder failed."; exit 22; }
@@ -54,48 +54,48 @@ else
         echo "[Git] Using anonymous Git access."
     fi
 
-    # Check if the 'www' directory exists, if not create it
-    if [ ! -d /mnt/server/www ]; then
-        echo "[Git] Creating /mnt/server/www directory."
-        mkdir -p /mnt/server/www
+    # Check if the 'node' directory exists, if not create it
+    if [ ! -d /mnt/server/node ]; then
+        echo "[Git] Creating /mnt/server/node directory."
+        mkdir -p /mnt/server/node
         else
-        rm -R /mnt/server/www && mkdir -p /mnt/server/www
+        rm -R /mnt/server/node && mkdir -p /mnt/server/node
     fi
 
-    cd /mnt/server/www || { echo "[Git] Error: Could not access /mnt/server/www directory."; exit 1; }
+    cd /mnt/server/node || { echo "[Git] Error: Could not access /mnt/server/node directory."; exit 1; }
 
-    if [ "$(ls -A /mnt/server/www)" ]; then
-        echo "[Git] /mnt/server/www directory is not empty."
+    if [ "$(ls -A /mnt/server/node)" ]; then
+        echo "[Git] /mnt/server/node directory is not empty."
         
-        # Check if .git directory exists in 'www'
+        # Check if .git directory exists in 'node'
         if [ -d .git ]; then
-            echo "[Git] .git directory exists in 'www'."
+            echo "[Git] .git directory exists in 'node'."
 
-            # Check if .git/config exists in 'www'
+            # Check if .git/config exists in 'node'
             if [ -f .git/config ]; then
-                echo "[Git] Loading repository info from git config in 'www'."
+                echo "[Git] Loading repository info from git config in 'node'."
                 ORIGIN=$(git config --get remote.origin.url)
             else
-                echo "[Git] Error: .git/config not found in 'www'. The directory may contain files, but it's not a valid Git repository."
+                echo "[Git] Error: .git/config not found in 'node'. The directory may contain files, but it's not a valid Git repository."
                 exit 10
             fi
         else
-            echo "[Git] Error: Directory contains files but no Git repository found in 'www'."
+            echo "[Git] Error: Directory contains files but no Git repository found in 'node'."
             exit 11
         fi
 
         # Check if origin matches the provided GIT_ADDRESS
         if [ "${ORIGIN}" == "${GIT_ADDRESS}" ]; then
-            echo "[Git] Repository origin matches. Pulling latest changes from ${GIT_ADDRESS} in 'www'."
-            git pull || { echo "[Git] Error: git pull failed for 'www'."; exit 12; }
+            echo "[Git] Repository origin matches. Pulling latest changes from ${GIT_ADDRESS} in 'node'."
+            git pull || { echo "[Git] Error: git pull failed for 'node'."; exit 12; }
         else
-            echo "[Git] Error: Repository origin does not match the provided GIT_ADDRESS in 'www'."
+            echo "[Git] Error: Repository origin does not match the provided GIT_ADDRESS in 'node'."
             exit 13
         fi
     else
         # The directory is empty, clone the repository
-        echo "[Git] /mnt/server/www directory is empty. Cloning ${GIT_ADDRESS} into /mnt/server/www."
-        git clone ${GIT_ADDRESS} . > /dev/null 2>&1 && echo "[Git] Repository cloned successfully." || { echo "[Git] Error: git clone failed for 'www'."; exit 14; }
+        echo "[Git] /mnt/server/node directory is empty. Cloning ${GIT_ADDRESS} into /mnt/server/node."
+        git clone ${GIT_ADDRESS} . > /dev/null 2>&1 && echo "[Git] Repository cloned successfully." || { echo "[Git] Error: git clone failed for 'node'."; exit 14; }
     fi
 fi
 

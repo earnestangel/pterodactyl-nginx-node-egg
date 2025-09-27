@@ -119,13 +119,13 @@
             "field_type": "text"
         },
         {
-            "name": "NPM Run Complete Message",
-            "description": "The message that indicates your Node.js application has started successfully (used to determine when the startup process is complete).",
-            "env_variable": "NPM_DONE",
-            "default_value": "Server is running",
+            "name": "Node Server Port",
+            "description": "The port on which your Node.js application listens (e.g., 3000).",
+            "env_variable": "NODE_PORT",
+            "default_value": "3000",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string",
+            "rules": "required|integer|min:1|max:65535",
             "field_type": "text"
         }
     ]

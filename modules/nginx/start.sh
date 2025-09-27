@@ -16,32 +16,8 @@ header() {
 }
 
 # Configurable paths/files via env vars with defaults
-PHP_VERSION="${PHP_VERSION:-8.4}"
-PHP_INI="${PHP_INI:-/home/container/php/php.ini}"
-PHP_FPM_CONF="${PHP_FPM_CONF:-/home/container/php/php-fpm.conf}"
 NGINX_CONF="${NGINX_CONF:-/home/container/nginx/nginx.conf}"
 NGINX_PREFIX="${NGINX_PREFIX:-/home/container}"
-
-# Locate php-fpm binary for the desired version
-if command -v "php-fpm${PHP_VERSION}" >/dev/null 2>&1; then
-  PHP_FPM_BIN="php-fpm${PHP_VERSION}"
-elif command -v php-fpm >/dev/null 2>&1; then
-  PHP_FPM_BIN=php-fpm
-else
-  echo -e "${RED}[Startup] ERROR: php-fpm${PHP_VERSION} not found; this may indicate a version mismatch between your Docker image and the PHP_VERSION variable (${PHP_VERSION}).${NC}"
-  exit 1
-fi
-
-# Start PHP-FPM
-header "[Startup] Starting PHP-FPM"
-echo -e "${WHITE}[Startup] Launching ${PHP_FPM_BIN} (PHP ${PHP_VERSION})${NC}"
-"$PHP_FPM_BIN" \
-  -c "$PHP_INI" \
-  --fpm-config "$PHP_FPM_CONF" \
-  --daemonize > /dev/null 2>&1 || {
-    echo -e "${RED}[Startup] ERROR: Failed to launch ${PHP_FPM_BIN}. Please check that your PHP_VERSION matches the installed php-fpm binary.${NC}"
-    exit 1
-  }
 
 # Success message
 echo -e "${GREEN}[Startup] Services successfully launched!${NC}"

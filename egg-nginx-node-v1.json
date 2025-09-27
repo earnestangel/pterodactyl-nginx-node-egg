@@ -107,6 +107,26 @@
             "user_editable": true,
             "rules": "nullable|string|regex:\/^[A-Za-z0-9_-]+$\/",
             "field_type": "text"
+        },
+        {
+            "name": "NPM Start Command",
+            "description": "The command to start your Node.js application (e.g., 'npm start' or 'node app.js').",
+            "env_variable": "NPM_START_CMD",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "NPM Run Complete Message",
+            "description": "The message that indicates your Node.js application has started successfully (used to determine when the startup process is complete).",
+            "env_variable": "NPM_DONE",
+            "default_value": "Server is running",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string",
+            "field_type": "text"
         }
     ]
 }

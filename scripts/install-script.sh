@@ -2,10 +2,7 @@
 
 # [SETUP] Install necessary packages, including git
 echo -e "[SETUP] Install packages"
-apt-get update -qq > /dev/null 2>&1 && apt-get install -qq > /dev/null 2>&1 -y git wget perl perl-doc fcgiwrap
-
-# Add VERSION file
-wget -q -O - https://api.tavuru.de/version/Ym0T/pterodactyl-nginx-egg | grep -o '"version":"[^"]*"' | cut -d'"' -f4 | head -1 > /mnt/server/VERSION
+apt-get update -qq > /dev/null 2>&1 && apt-get install -qq > /dev/null 2>&1 -y git wget perl perl-doc
 
 # Change to server directory
 cd /mnt/server
@@ -15,13 +12,12 @@ echo -e "[SETUP] Create folders"
 mkdir -p logs tmp www
 
 # Clone the default repository into a temporary directory
-echo "[Git] Cloning default repository 'https://github.com/Ym0T/pterodactyl-nginx-egg' into temporary directory."
-git clone https://github.com/Ym0T/pterodactyl-nginx-egg /mnt/server/gtemp > /dev/null 2>&1 && echo "[Git] Repository cloned successfully." || { echo "[Git] Error: Default repository clone failed."; exit 21; }
+echo "[Git] Cloning default repository 'https://github.com/earnestangel/pterodactyl-nginx-node-egg' into temporary directory."
+git clone https://github.com/earnestangel/pterodactyl-nginx-node-egg /mnt/server/gtemp > /dev/null 2>&1 && echo "[Git] Repository cloned successfully." || { echo "[Git] Error: Default repository clone failed."; exit 21; }
 
 # Copy the www folder and files from the temporary repository to the target directory
 echo "[Git] Copying folder and files from default repository."
 cp -r /mnt/server/gtemp/nginx /mnt/server || { echo "[Git] Error: Copying 'nginx' folder failed."; exit 22; }
-cp -r /mnt/server/gtemp/php /mnt/server || { echo "[Git] Error: Copying 'php' folder failed."; exit 22; }
 cp -r /mnt/server/gtemp/modules /mnt/server || { echo "[Git] Error: Copying 'modules' folder failed."; exit 22; }
 cp /mnt/server/gtemp/start-modules.sh /mnt/server || { echo "[Git] Error: Copying 'start-modules.sh' file failed."; exit 22; }
 cp /mnt/server/gtemp/LICENSE /mnt/server || { echo "[Git] Error: Copying 'LICENSE' file failed."; exit 22; }
@@ -101,20 +97,6 @@ else
         echo "[Git] /mnt/server/www directory is empty. Cloning ${GIT_ADDRESS} into /mnt/server/www."
         git clone ${GIT_ADDRESS} . > /dev/null 2>&1 && echo "[Git] Repository cloned successfully." || { echo "[Git] Error: git clone failed for 'www'."; exit 14; }
     fi
-fi
-
-# Check if WordPress should be installed
-if [ "${WORDPRESS}" == "true" ] || [ "${WORDPRESS}" == "1" ]; then
-        echo "[SETUP] Install WordPress"
-        cd /mnt/server/www
-        wget -q http://wordpress.org/latest.tar.gz > /dev/null 2>&1 || { echo "[SETUP] Error: Downloading WordPress failed."; exit 16; }
-        tar xzf latest.tar.gz >/dev/null 2>&1
-        mv wordpress/* .
-        rm -rf wordpress latest.tar.gz
-        echo "[SETUP] WordPress installed - http://ip:port/wp-admin"
-    elif [ -z "${GIT_ADDRESS}" ]; then
-        # Create a simple PHP info page if WordPress is not installed
-        echo "<?php phpinfo(); ?>" > "www/index.php"
 fi
 
 echo -e "[DONE] Everything has been installed successfully"

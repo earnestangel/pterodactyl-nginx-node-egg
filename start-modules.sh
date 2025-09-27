@@ -35,17 +35,10 @@ if is_enabled "$LOGCLEANER_STATUS"; then
   modules/logcleaner/start.sh
 fi
 
-# 2) Run auto-update first if enabled (only if module exists)
-AUTOUPDATE_STATUS="${AUTOUPDATE_STATUS:-true}"
-if is_enabled "$AUTOUPDATE_STATUS" && [[ -f "modules/autoupdate/start.sh" ]]; then
-  header "Running module: autoupdate"
-  modules/autoupdate/start.sh
-fi
-
-# 3) Execute other modules (except autoupdate, logcleaner and nginx)
+# 3) Execute other modules (except logcleaner and nginx)
 for module_dir in modules/*/; do
   module_name=$(basename "$module_dir")
-  [[ "$module_name" == "autoupdate" || "$module_name" == "logcleaner" || "$module_name" == "nginx" ]] && continue
+  [[ "$module_name" == "logcleaner" || "$module_name" == "nginx" ]] && continue
   start_script="${module_dir}start.sh"
   status_var="${module_name^^}_STATUS"
   status="${!status_var:-false}"

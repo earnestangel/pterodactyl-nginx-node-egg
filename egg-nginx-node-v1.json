@@ -10,7 +10,7 @@
     "description": "Pterodactyl Nginx Egg\r\n\r\nThe Pterodactyl Nginx Egg is a web server solution for Pterodactyl, featuring Nginx, Node.js, Git support, and Cloudflare Tunnel integration. It supports AMD64 & ARM64 architectures. Key Features:\r\n\u2705 Git integration for automatic deployment\r\n\u2705 Cloudflare Tunnel support for secure remote access\r\n\u2705 HTTPS configuration support\r\n\u2705 Automatic updates for Git repositories",
     "features": null,
     "docker_images": {
-        "ghcr.io/ym0t/pterodactyl-nginx-egg:8.4-latest": "ghcr.io/ym0t/pterodactyl-nginx-egg:8.4-latest"
+        "ririkoai/pterodactyl-nginx-node:node22": "ririkoai/pterodactyl-nginx-node:node22"
     },
     "file_denylist": [],
     "startup": "./start-modules.sh",

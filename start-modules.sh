@@ -55,11 +55,15 @@ for module_dir in modules/*/; do
   fi
 done
 
-# 4) Run nginx module last (blocking)
+# 4) Run nginx + node module last (blocking)
 NGINX_STATUS="${NGINX_STATUS:-true}"
 if is_enabled "$NGINX_STATUS"; then
   header "Running module: nginx"
-  modules/nginx/start.sh
+  # run node and nginx in parallel
+  ./modules/node/start.sh &
+  ./modules/nginx/start.sh
+  # wait for child scripts to finish
+  wait
   # nginx runs in foreground/blocking; exit after start
   exit 0
 fi
